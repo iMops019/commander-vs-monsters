@@ -12,6 +12,7 @@ const UPGRADES := {
 }
 
 @onready var mesh_instance: MeshInstance3D = $MeshInstance3D
+@onready var health: Health = $Health
 
 var upgrade_in_progress: String = ""
 var upgrade_timer: float = 0.0
@@ -20,6 +21,7 @@ var upgrade_timer: float = 0.0
 func _ready() -> void:
 	add_to_group("buildings")
 	add_to_group("tech_buildings")
+	health.died.connect(queue_free)
 	var material := StandardMaterial3D.new()
 	material.albedo_color = Color(0.45, 0.25, 0.55)
 	mesh_instance.material_override = material

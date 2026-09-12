@@ -1,4 +1,4 @@
-extends Node3D
+extends StaticBody3D
 
 const WORKER_SCENE := preload("res://scenes/worker.tscn")
 const DEFENDER_SCENE := preload("res://scenes/monster_defender.tscn")
@@ -15,6 +15,7 @@ const MAX_DEFENDERS := 3
 const MAX_ATTACKERS := 2
 
 @onready var mesh_instance: MeshInstance3D = $MeshInstance3D
+@onready var health: Health = $Health
 
 var wood := 50
 var red_stone := 30
@@ -30,9 +31,15 @@ var decision_timer := DECISION_INTERVAL
 
 func _ready() -> void:
 	add_to_group("monster_base")
+	add_to_group("hostile")
+	health.died.connect(_on_died)
 	var material := StandardMaterial3D.new()
 	material.albedo_color = Color(0.25, 0.05, 0.05)
 	mesh_instance.material_override = material
+
+
+func _on_died() -> void:
+	EventBus.game_won.emit()
 
 
 func deposit(resource_name: String, amount: int) -> void:

@@ -1,6 +1,7 @@
-[gd_scene load_steps=4 format=3]
+[gd_scene load_steps=5 format=3]
 
 [ext_resource type="Script" path="res://scripts/tech_building.gd" id="1_script"]
+[ext_resource type="Script" path="res://scripts/health.gd" id="2_health"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_tech"]
 size = Vector3(2.5, 2, 2.5)
@@ -10,6 +11,10 @@ size = Vector3(2.5, 2, 2.5)
 
 [node name="TechBuilding" type="StaticBody3D"]
 script = ExtResource("1_script")
+
+[node name="Health" type="Node" parent="."]
+script = ExtResource("2_health")
+max_health = 80
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 position = Vector3(0, 1, 0)

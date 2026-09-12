@@ -123,10 +123,40 @@ later phases assume earlier ones exist, even in placeholder form.
       path to a resource node, get raided by an attacker, and fight a defender as Hero
 
 ## Phase 6 — Combat Glue & Win Condition
-- [ ] Towers auto-target and fire at monsters in range
-- [ ] Attackers actually damage player workers/buildings when they arrive
-- [ ] Hero can damage/destroy Monster buildings (enables the "push" part of the loop)
-- [ ] Win condition: destroy enemy Command Center → end screen/restart
+- [x] Towers auto-target and fire (`tower.gd`): an `Area3D` detection radius tracks
+      anything in group "hostile" that enters/exits range, fires at the nearest one on
+      a cooldown (damage scaled by the Phase 3 `GameState.tower_damage_multiplier`,
+      which finally does something), with a brief tracer line for feedback. Verified
+      in isolation against the training dummy, including through a full death/respawn
+      cycle, since no Tower exists in the default scene for the normal headless run to
+      exercise
+- [x] Attackers now actually damage things (`monster_attacker.gd`): while LINGERING at
+      the player base, it periodically hits the nearest thing in range among
+      "player_workers"/"buildings"/"stockpile" that has a `Health` component
+- [x] Health added to every building so the above has something to act on: Tower and
+      Tech Building (80 HP, permanently destroyed — `queue_free` — since losing a
+      placed building to a raid is meant to sting), and the player's Stockpile (150 HP,
+      **resets instead of being destroyed** — a deliberate scope cut, see note below)
+- [x] Hero can damage/destroy Monster buildings: **found and fixed a real bug while
+      wiring this up** — `MonsterCommander` was a bare `Node3D` with no collision body,
+      so Hero's raycast attack would have passed straight through it and this
+      requirement silently wouldn't have worked at all. Changed it to `StaticBody3D`
+      with a `CollisionShape3D`, gave it 200 HP, and added it to group "hostile"
+- [x] Win condition (`scripts/win_screen.gd`, `scenes/win_screen.tscn`): Monster
+      Commander's `Health.died` emits a new `EventBus.game_won` signal; the win screen
+      shows, pauses the tree (`get_tree().paused`), forces the mouse visible (in case
+      you were in Hero mode with the cursor captured), and a Restart button reloads the
+      scene. Verified directly (apply lethal damage to the Monster Commander's Health
+      in isolation, confirmed the screen appears and the tree pauses) since the full
+      playthrough to actually kill it takes a while
+- Scope note: the player's Stockpile intentionally **cannot be permanently destroyed** —
+  there's no lose/game-over flow in this roadmap (only a win condition was ever asked
+  for), and permanently destroying the only deposit point would soft-lock the economy
+  with nothing to recover into. This mirrors how Hero death is a respawn, not a game
+  over. Revisit if a full win/lose flow becomes a goal later. **Still needs an
+  in-editor play-test**: build a Tower and confirm it fires on a wandering monster,
+  let an Attacker's raid actually chip your Stockpile/buildings, and go destroy the
+  Monster Commander as Hero to see the win screen for real
 
 ## Phase 7 — Playtest & Tuning Pass
 - [ ] Placeholder art/audio only where it affects readability (can't tell what's a

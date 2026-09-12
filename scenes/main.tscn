@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3]
+[gd_scene load_steps=18 format=3]
 
 [ext_resource type="Script" path="res://scripts/hero.gd" id="1_hero"]
 [ext_resource type="Script" path="res://scripts/commander_camera.gd" id="2_cam"]
@@ -10,6 +10,7 @@
 [ext_resource type="Script" path="res://scripts/health.gd" id="8_health"]
 [ext_resource type="PackedScene" path="res://scenes/training_dummy.tscn" id="9_dummy"]
 [ext_resource type="PackedScene" path="res://scenes/monster_commander.tscn" id="10_monster_cmd"]
+[ext_resource type="PackedScene" path="res://scenes/win_screen.tscn" id="11_winscreen"]
 
 [sub_resource type="Environment" id="Environment_1"]
 background_mode = 1
@@ -87,6 +88,10 @@ script = ExtResource("2_cam")
 position = Vector3(0, 0.5, -10)
 script = ExtResource("4_stockpile")
 
+[node name="Health" type="Node" parent="Stockpile"]
+script = ExtResource("8_health")
+max_health = 150
+
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Stockpile"]
 position = Vector3(0, 1, 0)
 mesh = SubResource("BoxMesh_stockpile")
@@ -108,3 +113,5 @@ position = Vector3(5, 0.5, 3)
 
 [node name="MonsterCommander" parent="." instance=ExtResource("10_monster_cmd")]
 position = Vector3(0, 0.5, 18)
+
+[node name="WinScreen" parent="." instance=ExtResource("11_winscreen")]

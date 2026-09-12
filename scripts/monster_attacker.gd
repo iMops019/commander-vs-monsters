@@ -5,6 +5,9 @@ enum State { RAIDING, LINGERING, RETURNING }
 const SPEED := 4.0
 const ARRIVE_DISTANCE := 1.5
 const LINGER_TIME := 6.0
+const RAID_ATTACK_RANGE := 3.0
+const RAID_DAMAGE := 8
+const RAID_ATTACK_COOLDOWN := 1.0
 
 @onready var health: Health = $Health
 @onready var mesh_instance: MeshInstance3D = $MeshInstance3D
@@ -13,6 +16,7 @@ var raid_target: Node3D = null
 var home_position: Vector3
 var state: State = State.RAIDING
 var linger_timer := 0.0
+var raid_attack_timer := 0.0
 
 
 func _ready() -> void:
@@ -49,6 +53,12 @@ func _physics_process(delta: float) -> void:
 			velocity.x = 0
 			velocity.z = 0
 			linger_timer -= delta
+			raid_attack_timer = maxf(raid_attack_timer - delta, 0.0)
+			if raid_attack_timer <= 0.0:
+				var raid_victim := _find_raid_target()
+				if raid_victim != null:
+					raid_attack_timer = RAID_ATTACK_COOLDOWN
+					raid_victim.get_node("Health").apply_damage(RAID_DAMAGE)
 			if linger_timer <= 0.0:
 				state = State.RETURNING
 		State.RETURNING:
@@ -62,6 +72,27 @@ func _physics_process(delta: float) -> void:
 	else:
 		velocity.y = 0
 	move_and_slide()
+
+
+func _find_raid_target() -> Node:
+	var candidates: Array = []
+	candidates.append_array(get_tree().get_nodes_in_group("player_workers"))
+	candidates.append_array(get_tree().get_nodes_in_group("buildings"))
+	candidates.append_array(get_tree().get_nodes_in_group("stockpile"))
+
+	var closest: Node = null
+	var closest_distance := RAID_ATTACK_RANGE
+	for candidate in candidates:
+		if not is_instance_valid(candidate):
+			continue
+		var target_health: Node = candidate.get_node_or_null("Health")
+		if target_health == null or target_health.is_dead():
+			continue
+		var distance := global_position.distance_to(candidate.global_position)
+		if distance <= closest_distance:
+			closest = candidate
+			closest_distance = distance
+	return closest
 
 
 func _move_toward(destination: Vector3, _delta: float) -> void:
