@@ -159,13 +159,32 @@ later phases assume earlier ones exist, even in placeholder form.
   Monster Commander as Hero to see the win screen for real
 
 ## Phase 7 — Playtest & Tuning Pass
-- [ ] Placeholder art/audio only where it affects readability (can't tell what's a
-      resource vs a monster, etc.) — skip anything purely cosmetic
+- [x] Map rework (started early, ahead of the rest of this phase): the battlefield is
+      now a long corridor rather than a 40x40 square — ground resized to 70 wide x 260
+      long (`main.tscn`), player Stockpile/Hero/Worker/dummy at the south end (z≈-110),
+      Monster Commander at the north end (z≈110), the two resource nodes centered at
+      z=0 as contested ground between the bases
+- [x] Border/edge (`scripts/map_border.gd`): a `MapBorder` node procedurally builds 4
+      tall box walls around the perimeter at `_ready()`, parametrized by
+      `map_width`/`map_length` so resizing the map again doesn't mean hand-editing wall
+      geometry. These are a **deliberate placeholder** — solid collision + a rock-grey
+      color so the map reads as bounded, meant to be swapped for real Meshy cliff
+      meshes later while keeping the same collision shapes
+- [x] Ground given a grass-green placeholder material instead of default grey, since
+      that's a free readability win while waiting on real terrain/textures
+- [x] Retuned `commander_camera.gd` for the new scale: `PAN_SPEED` 12→40, `ZOOM_STEP`
+      1.5→4, height range 6–30 → 10–100. Old values would have made panning/zooming
+      across a map this size unusably slow
+- Real Meshy trees/stone/cliffs are not in the project yet (checked `assets/` —
+  still empty) — this phase's greybox placeholders are what they'll replace once
+  generated. Verified headless with no errors
+- **Balance heads-up, not yet acted on**: at the new scale, a worker's round trip from
+  the player Stockpile to the nearest resource node (~110 units each way, 3.5 units/s)
+  is roughly a minute for a 10-unit haul, and Hero crossing the full battlefield
+  (5 units/s over 260 units) takes about 50 seconds. That may be exactly the slower,
+  more strategic pace a "HUGE" battlefield should have — but it's different enough
+  from the old 40x40 map that it's worth a real playtest before deciding whether
+  worker speed/carry capacity or resource placement need retuning
 - [ ] Tune AI Commander pacing/aggression against your own econ pace
 - [ ] Revisit the open questions in [GAME_DESIGN.md §8](GAME_DESIGN.md#8-open-questions-revisit-once-the-prototype-loop-is-playable)
       now that both loops actually exist to test against
-
----
-
-**Next concrete step:** Phase 0 — want me to go ahead and set up the git repo, folder
-structure, and input map now?

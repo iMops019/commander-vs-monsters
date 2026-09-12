@@ -1,9 +1,9 @@
 extends Camera3D
 
-const PAN_SPEED := 12.0
-const ZOOM_STEP := 1.5
-const MIN_HEIGHT := 6.0
-const MAX_HEIGHT := 30.0
+const PAN_SPEED := 40.0
+const ZOOM_STEP := 4.0
+const MIN_HEIGHT := 10.0
+const MAX_HEIGHT := 100.0
 
 var active := false
 var selected_worker: Node = null
