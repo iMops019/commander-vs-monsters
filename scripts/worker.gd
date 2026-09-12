@@ -113,8 +113,9 @@ func _move_toward(destination: Vector3, _delta: float) -> void:
 	to_target.y = 0
 	if to_target.length() > ARRIVE_DISTANCE:
 		var direction := to_target.normalized()
-		velocity.x = direction.x * SPEED
-		velocity.z = direction.z * SPEED
+		var speed := SPEED * GameState.worker_speed_multiplier
+		velocity.x = direction.x * speed
+		velocity.z = direction.z * speed
 		look_at(global_position + direction, Vector3.UP)
 	else:
 		velocity.x = 0

@@ -1,0 +1,41 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/hud.gd" id="1_hud"]
+
+[node name="HUD" type="CanvasLayer"]
+script = ExtResource("1_hud")
+
+[node name="Margin" type="MarginContainer" parent="."]
+offset_left = 16.0
+offset_top = 16.0
+offset_right = 460.0
+offset_bottom = 280.0
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="VBox" type="VBoxContainer" parent="Margin"]
+
+[node name="ResourceLabel" type="Label" parent="Margin/VBox"]
+text = "Wood: 0   Red Stone: 0   Gold: 0"
+
+[node name="BuildPanel" type="HBoxContainer" parent="Margin/VBox"]
+
+[node name="BuildTowerButton" type="Button" parent="Margin/VBox/BuildPanel"]
+text = "Build Tower (40 Wood / 20 Red Stone)"
+
+[node name="BuildTechButton" type="Button" parent="Margin/VBox/BuildPanel"]
+text = "Build Tech Building (30 Wood / 40 Red Stone)"
+
+[node name="UpgradePanel" type="VBoxContainer" parent="Margin/VBox"]
+visible = false
+
+[node name="UpgradeTitleLabel" type="Label" parent="Margin/VBox/UpgradePanel"]
+text = "Tech Building"
+
+[node name="WorkerSpeedButton" type="Button" parent="Margin/VBox/UpgradePanel"]
+text = "Upgrade: Worker Speed +20% (20 Wood / 10 Red Stone)"
+
+[node name="TowerDamageButton" type="Button" parent="Margin/VBox/UpgradePanel"]
+text = "Upgrade: Tower Damage +25% (15 Wood / 25 Red Stone)"

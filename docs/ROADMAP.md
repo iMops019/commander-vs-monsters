@@ -49,11 +49,22 @@ later phases assume earlier ones exist, even in placeholder form.
       worker, right-click the wood/red-stone node, watch it gather and return
 
 ## Phase 3 — Base Building
-- [ ] Build placement flow: pick building from menu, ghost preview, cost check, confirm
-- [ ] Building types: Command Center (already exists as "home"), one Tower, one Tech
-      building
-- [ ] Upgrade queue: select building → choose upgrade → timer → apply effect
-      (e.g. worker speed+, tower damage+)
+- [x] Build placement flow (`commander_camera.gd`): HUD button → transparent green
+      "ghost" follows the mouse raycast on the ground → left-click confirms if
+      affordable (deducts cost, spawns the real building) → right-click/Escape cancels
+- [x] Building types: Command Center (still the `Stockpile` placeholder from Phase 2 —
+      no separate scene needed yet), `scenes/tower.tscn` (40 Wood/20 Red Stone,
+      groups "buildings"/"towers" — auto-fire logic is Phase 6), `scenes/tech_building.tscn`
+      (30 Wood/40 Red Stone, groups "buildings"/"tech_buildings")
+- [x] Upgrade queue, in `scripts/tech_building.gd`: select a Tech Building → HUD upgrade
+      panel appears → click an upgrade → cost deducted, timer runs → applies
+      `GameState.worker_speed_multiplier` or `.tower_damage_multiplier` (the latter has
+      no effect yet until Tower combat exists in Phase 6, but the pipeline is in place)
+- [x] `scenes/hud.tscn` + `scripts/hud.gd` added: resource readout, build buttons,
+      upgrade panel — only visible in Commander mode. Verified headless, both new
+      building scenes also load standalone with no errors. **Still needs an in-editor
+      play-test**: place a Tower and a Tech Building, select the Tech Building, run an
+      upgrade, confirm the worker speeds up afterward
 
 ## Phase 4 — Hero Combat
 - [ ] Shared Health/Damage component (used by Hero, workers, monsters, buildings)

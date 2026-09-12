@@ -1,0 +1,20 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scripts/tech_building.gd" id="1_script"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_tech"]
+size = Vector3(2.5, 2, 2.5)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_tech"]
+size = Vector3(2.5, 2, 2.5)
+
+[node name="TechBuilding" type="StaticBody3D"]
+script = ExtResource("1_script")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+position = Vector3(0, 1, 0)
+mesh = SubResource("BoxMesh_tech")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+position = Vector3(0, 1, 0)
+shape = SubResource("BoxShape3D_tech")

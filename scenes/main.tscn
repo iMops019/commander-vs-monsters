@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3]
+[gd_scene load_steps=14 format=3]
 
 [ext_resource type="Script" path="res://scripts/hero.gd" id="1_hero"]
 [ext_resource type="Script" path="res://scripts/commander_camera.gd" id="2_cam"]
@@ -6,6 +6,7 @@
 [ext_resource type="Script" path="res://scripts/stockpile.gd" id="4_stockpile"]
 [ext_resource type="PackedScene" path="res://scenes/worker.tscn" id="5_worker"]
 [ext_resource type="PackedScene" path="res://scenes/resource_node.tscn" id="6_resnode"]
+[ext_resource type="PackedScene" path="res://scenes/hud.tscn" id="7_hud"]
 
 [sub_resource type="Environment" id="Environment_1"]
 background_mode = 1
@@ -92,3 +93,5 @@ position = Vector3(-8, 0.5, 5)
 [node name="RedStoneNode" parent="." instance=ExtResource("6_resnode")]
 position = Vector3(8, 0.5, 5)
 resource_type = "red_stone"
+
+[node name="HUD" parent="." instance=ExtResource("7_hud")]

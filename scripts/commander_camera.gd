@@ -7,6 +7,12 @@ const MAX_HEIGHT := 30.0
 
 var active := false
 var selected_worker: Node = null
+var selected_building: Node = null
+
+var placing_scene: PackedScene = null
+var placing_wood_cost: int = 0
+var placing_red_stone_cost: int = 0
+var ghost: Node3D = null
 
 
 func _ready() -> void:
@@ -33,10 +39,18 @@ func _process(delta: float) -> void:
 		pan.x += 1
 	if pan != Vector2.ZERO:
 		position += Vector3(pan.x, 0, pan.y).normalized() * PAN_SPEED * delta
+	if ghost != null:
+		_update_ghost_position()
 
 
 func _unhandled_input(event: InputEvent) -> void:
 	if not active:
+		return
+	if ghost != null:
+		if event.is_action_pressed("primary_action"):
+			_confirm_placement()
+		elif event.is_action_pressed("secondary_action") or event.is_action_pressed("ui_cancel"):
+			_cancel_placement()
 		return
 	if event.is_action_pressed("primary_action"):
 		_select_at(get_viewport().get_mouse_position())
@@ -50,6 +64,52 @@ func _unhandled_input(event: InputEvent) -> void:
 			position.y = clampf(position.y + ZOOM_STEP, MIN_HEIGHT, MAX_HEIGHT)
 
 
+func start_placement(scene: PackedScene, wood_cost: int, red_stone_cost: int) -> void:
+	_cancel_placement()
+	placing_scene = scene
+	placing_wood_cost = wood_cost
+	placing_red_stone_cost = red_stone_cost
+	ghost = scene.instantiate()
+	if ghost is CollisionObject3D:
+		ghost.collision_layer = 0
+		ghost.collision_mask = 0
+	_make_ghost_transparent(ghost)
+	get_tree().current_scene.add_child(ghost)
+
+
+func _make_ghost_transparent(node: Node) -> void:
+	if node is MeshInstance3D:
+		var material := StandardMaterial3D.new()
+		material.albedo_color = Color(0.3, 1.0, 0.3, 0.5)
+		material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+		node.material_override = material
+	for child in node.get_children():
+		_make_ghost_transparent(child)
+
+
+func _update_ghost_position() -> void:
+	var result := _raycast(get_viewport().get_mouse_position())
+	if result.has("position"):
+		ghost.global_position = result["position"]
+
+
+func _confirm_placement() -> void:
+	if GameState.wood < placing_wood_cost or GameState.red_stone < placing_red_stone_cost:
+		return
+	GameState.spend_resources(placing_wood_cost, placing_red_stone_cost)
+	var building := placing_scene.instantiate()
+	get_tree().current_scene.add_child(building)
+	building.global_position = ghost.global_position
+	_cancel_placement()
+
+
+func _cancel_placement() -> void:
+	if ghost != null:
+		ghost.queue_free()
+		ghost = null
+	placing_scene = null
+
+
 func _raycast(screen_pos: Vector2) -> Dictionary:
 	var from := project_ray_origin(screen_pos)
 	var to := from + project_ray_normal(screen_pos) * 1000.0
@@ -60,7 +120,15 @@ func _raycast(screen_pos: Vector2) -> Dictionary:
 func _select_at(screen_pos: Vector2) -> void:
 	var result := _raycast(screen_pos)
 	var hit: Object = result.get("collider")
-	_set_selected(hit if hit != null and hit.is_in_group("workers") else null)
+	if hit != null and hit.is_in_group("workers"):
+		_set_selected(hit)
+		_set_selected_building(null)
+	elif hit != null and hit.is_in_group("tech_buildings"):
+		_set_selected(null)
+		_set_selected_building(hit)
+	else:
+		_set_selected(null)
+		_set_selected_building(null)
 
 
 func _command_at(screen_pos: Vector2) -> void:
@@ -84,3 +152,10 @@ func _set_selected(worker: Object) -> void:
 	selected_worker = worker
 	if is_instance_valid(selected_worker):
 		selected_worker.set_selected(true)
+
+
+func _set_selected_building(building: Object) -> void:
+	if selected_building == building:
+		return
+	selected_building = building
+	EventBus.building_selected.emit(building)
