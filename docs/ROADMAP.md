@@ -17,12 +17,21 @@ later phases assume earlier ones exist, even in placeholder form.
       (signals for view mode + resource changes) — see `autoloads/`
 
 ## Phase 1 — View Switching Skeleton
-- [ ] Flat greybox test level
-- [ ] Hero character controller: movement + 3rd person camera, then add 1st person
-      camera toggle
-- [ ] Commander camera: top-down, pan (edge/keys) + zoom, no unit control yet
-- [ ] Wire `toggle_view` to swap active camera/control scheme between the two — prove
-      this feels instant and non-janky before building anything on top of it
+- [x] Flat greybox test level (`scenes/main.tscn`: ground box, directional light, flat
+      ambient environment)
+- [x] Hero character controller (`scripts/hero.gd`): WASD + jump, mouse-look, 3rd person
+      camera by default with `toggle_camera` switching to 1st person
+- [x] Commander camera (`scripts/commander_camera.gd`): fixed top-down-ish angle,
+      WASD pans it, mouse wheel zooms (moves camera height) — no unit selection/control
+      yet, that's Phase 2
+- [x] `toggle_view` wired in `scripts/main.gd` — swaps `GameState.view_mode`, both
+      camera scripts and the hero listen for `EventBus.view_mode_changed` and
+      activate/deactivate themselves (camera `current`, mouse capture, physics
+      processing) accordingly
+- [x] Verified headless (`godot --headless --path . res://scenes/main.tscn
+      --quit-after 60`) — loads and runs 60 frames with no script/scene errors.
+      **Still needs a manual play-test in the editor** to actually feel out the camera
+      switch (headless can't confirm "does this feel instant and non-janky")
 
 ## Phase 2 — Worker AI & Resources (Commander side)
 - [ ] Resource node scenes (wood, red stone) placed in the level

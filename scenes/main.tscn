@@ -1,0 +1,70 @@
+[gd_scene load_steps=9 format=3]
+
+[ext_resource type="Script" path="res://scripts/hero.gd" id="1_hero"]
+[ext_resource type="Script" path="res://scripts/commander_camera.gd" id="2_cam"]
+[ext_resource type="Script" path="res://scripts/main.gd" id="3_main"]
+
+[sub_resource type="Environment" id="Environment_1"]
+background_mode = 1
+background_color = Color(0.45, 0.55, 0.65, 1)
+ambient_light_source = 2
+ambient_light_color = Color(1, 1, 1, 1)
+ambient_light_energy = 0.6
+
+[sub_resource type="BoxMesh" id="BoxMesh_ground"]
+size = Vector3(40, 1, 40)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ground"]
+size = Vector3(40, 1, 40)
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_hero"]
+radius = 0.4
+height = 1.8
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_hero"]
+radius = 0.4
+height = 1.8
+
+[node name="Main" type="Node3D"]
+script = ExtResource("3_main")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_1")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+rotation_degrees = Vector3(-45, -30, 0)
+shadow_enabled = true
+
+[node name="Ground" type="StaticBody3D" parent="."]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Ground"]
+mesh = SubResource("BoxMesh_ground")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Ground"]
+shape = SubResource("BoxShape3D_ground")
+
+[node name="Hero" type="CharacterBody3D" parent="."]
+position = Vector3(0, 1.4, 0)
+script = ExtResource("1_hero")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Hero"]
+shape = SubResource("CapsuleShape3D_hero")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Hero"]
+mesh = SubResource("CapsuleMesh_hero")
+
+[node name="CameraPivot" type="Node3D" parent="Hero"]
+position = Vector3(0, 0.6, 0)
+
+[node name="Camera3DFirst" type="Camera3D" parent="Hero/CameraPivot"]
+current = false
+
+[node name="Camera3DThird" type="Camera3D" parent="Hero/CameraPivot"]
+position = Vector3(0, 0.3, 4)
+current = false
+
+[node name="CommanderCamera" type="Camera3D" parent="."]
+position = Vector3(0, 18, 12)
+rotation_degrees = Vector3(-60, 0, 0)
+current = true
+script = ExtResource("2_cam")
