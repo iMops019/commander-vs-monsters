@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3]
+[gd_scene load_steps=16 format=3]
 
 [ext_resource type="Script" path="res://scripts/hero.gd" id="1_hero"]
 [ext_resource type="Script" path="res://scripts/commander_camera.gd" id="2_cam"]
@@ -7,6 +7,8 @@
 [ext_resource type="PackedScene" path="res://scenes/worker.tscn" id="5_worker"]
 [ext_resource type="PackedScene" path="res://scenes/resource_node.tscn" id="6_resnode"]
 [ext_resource type="PackedScene" path="res://scenes/hud.tscn" id="7_hud"]
+[ext_resource type="Script" path="res://scripts/health.gd" id="8_health"]
+[ext_resource type="PackedScene" path="res://scenes/training_dummy.tscn" id="9_dummy"]
 
 [sub_resource type="Environment" id="Environment_1"]
 background_mode = 1
@@ -60,6 +62,10 @@ shape = SubResource("CapsuleShape3D_hero")
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Hero"]
 mesh = SubResource("CapsuleMesh_hero")
 
+[node name="Health" type="Node" parent="Hero"]
+script = ExtResource("8_health")
+max_health = 100
+
 [node name="CameraPivot" type="Node3D" parent="Hero"]
 position = Vector3(0, 0.6, 0)
 
@@ -95,3 +101,6 @@ position = Vector3(8, 0.5, 5)
 resource_type = "red_stone"
 
 [node name="HUD" parent="." instance=ExtResource("7_hud")]
+
+[node name="TrainingDummy" parent="." instance=ExtResource("9_dummy")]
+position = Vector3(5, 0.5, 3)

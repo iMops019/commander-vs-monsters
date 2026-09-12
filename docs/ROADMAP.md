@@ -67,10 +67,25 @@ later phases assume earlier ones exist, even in placeholder form.
       upgrade, confirm the worker speeds up afterward
 
 ## Phase 4 — Hero Combat
-- [ ] Shared Health/Damage component (used by Hero, workers, monsters, buildings)
-- [ ] Hero attack (start with one attack type — melee or ranged, not both)
-- [ ] XP + Gold on kill; simple level-up (flat stat bump is fine)
-- [ ] Gear/upgrade spend screen tied to a Commander-mode building
+- [x] Shared `Health` component (`scripts/health.gd`, global class `Health`) — a plain
+      Node with `apply_damage`/`heal`/`reset`/`died` signal, added as a child to any
+      entity that needs HP. Hero now has one; Phase 5 monsters will reuse it
+- [x] Hero attack (`hero.gd`): one melee-range raycast on `primary_action`, on a
+      cooldown, forward from whichever camera (1st/3rd) is active
+- [x] XP + Gold on kill: added `scenes/training_dummy.tscn` (group "hostile", 50 HP,
+      respawns a few seconds after death) purely as something to hit, since Phase 5's
+      real monsters don't exist yet. On death it calls `GameState.add_hero_xp()` /
+      `add_resource("gold", ...)`; `add_hero_xp` handles leveling up
+- [x] Gear/upgrade spend screen: **folded into the existing Tech Building upgrade
+      panel** rather than adding a third building — it's already a Commander-mode
+      building with an upgrade queue, so two new Gold-cost upgrades (`hero_damage`,
+      `hero_health`) were added there instead of building a separate screen. HUD
+      resource line now also shows Hero level/XP so kills are visible without leaving
+      Commander mode. Verified headless (note: adding `class_name Health` required one
+      `--headless --editor --quit` pass to register the global class before it would
+      resolve — expected one-time step, not a bug). **Still needs an in-editor
+      play-test**: hit the dummy a few times as Hero, confirm it dies/respawns and
+      Gold/XP tick up, then switch to Commander and spend Gold on a Hero upgrade
 
 ## Phase 5 — Monster AI Side
 - [ ] Monster Worker: same gather loop as Phase 2, no player input, runs on its own

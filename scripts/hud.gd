@@ -10,6 +10,8 @@ const TECH_BUILDING_SCENE := preload("res://scenes/tech_building.tscn")
 @onready var upgrade_title_label: Label = $Margin/VBox/UpgradePanel/UpgradeTitleLabel
 @onready var worker_speed_button: Button = $Margin/VBox/UpgradePanel/WorkerSpeedButton
 @onready var tower_damage_button: Button = $Margin/VBox/UpgradePanel/TowerDamageButton
+@onready var hero_damage_button: Button = $Margin/VBox/UpgradePanel/HeroDamageButton
+@onready var hero_health_button: Button = $Margin/VBox/UpgradePanel/HeroHealthButton
 
 var selected_building: Node = null
 
@@ -18,11 +20,15 @@ func _ready() -> void:
 	EventBus.resource_changed.connect(_on_resource_changed)
 	EventBus.view_mode_changed.connect(_on_view_mode_changed)
 	EventBus.building_selected.connect(_on_building_selected)
+	EventBus.hero_xp_changed.connect(_on_hero_stats_changed)
+	EventBus.hero_leveled_up.connect(_on_hero_stats_changed)
 
 	build_tower_button.pressed.connect(_on_build_tower_pressed)
 	build_tech_button.pressed.connect(_on_build_tech_pressed)
 	worker_speed_button.pressed.connect(_on_worker_speed_pressed)
 	tower_damage_button.pressed.connect(_on_tower_damage_pressed)
+	hero_damage_button.pressed.connect(_on_hero_damage_pressed)
+	hero_health_button.pressed.connect(_on_hero_health_pressed)
 
 	_on_view_mode_changed(GameState.view_mode)
 	_update_resource_label()
@@ -33,7 +39,14 @@ func _on_resource_changed(_resource_name: String, _amount: int) -> void:
 
 
 func _update_resource_label() -> void:
-	resource_label.text = "Wood: %d   Red Stone: %d   Gold: %d" % [GameState.wood, GameState.red_stone, GameState.gold]
+	resource_label.text = "Wood: %d   Red Stone: %d   Gold: %d   |   Hero Lv %d (XP %d/%d)" % [
+		GameState.wood, GameState.red_stone, GameState.gold,
+		GameState.hero_level, GameState.hero_xp, GameState.XP_PER_LEVEL,
+	]
+
+
+func _on_hero_stats_changed(_value) -> void:
+	_update_resource_label()
 
 
 func _on_view_mode_changed(mode: int) -> void:
@@ -65,3 +78,13 @@ func _on_worker_speed_pressed() -> void:
 func _on_tower_damage_pressed() -> void:
 	if is_instance_valid(selected_building):
 		selected_building.start_upgrade("tower_damage")
+
+
+func _on_hero_damage_pressed() -> void:
+	if is_instance_valid(selected_building):
+		selected_building.start_upgrade("hero_damage")
+
+
+func _on_hero_health_pressed() -> void:
+	if is_instance_valid(selected_building):
+		selected_building.start_upgrade("hero_health")

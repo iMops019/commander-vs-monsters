@@ -7,6 +7,8 @@ extends StaticBody3D
 const UPGRADES := {
 	"worker_speed": {"wood": 20, "red_stone": 10, "time": 4.0},
 	"tower_damage": {"wood": 15, "red_stone": 25, "time": 4.0},
+	"hero_damage": {"gold": 30, "time": 3.0},
+	"hero_health": {"gold": 30, "time": 3.0},
 }
 
 @onready var mesh_instance: MeshInstance3D = $MeshInstance3D
@@ -27,9 +29,12 @@ func start_upgrade(upgrade_id: String) -> bool:
 	if upgrade_in_progress != "" or not UPGRADES.has(upgrade_id):
 		return false
 	var data: Dictionary = UPGRADES[upgrade_id]
-	if GameState.wood < data["wood"] or GameState.red_stone < data["red_stone"]:
+	var wood_needed: int = data.get("wood", 0)
+	var red_stone_needed: int = data.get("red_stone", 0)
+	var gold_needed: int = data.get("gold", 0)
+	if GameState.wood < wood_needed or GameState.red_stone < red_stone_needed or GameState.gold < gold_needed:
 		return false
-	GameState.spend_resources(data["wood"], data["red_stone"])
+	GameState.spend_resources(wood_needed, red_stone_needed, gold_needed)
 	upgrade_in_progress = upgrade_id
 	upgrade_timer = data["time"]
 	return true
@@ -50,3 +55,7 @@ func _apply_upgrade(upgrade_id: String) -> void:
 			GameState.increase_worker_speed(0.2)
 		"tower_damage":
 			GameState.increase_tower_damage(0.25)
+		"hero_damage":
+			GameState.increase_hero_damage(5)
+		"hero_health":
+			GameState.increase_hero_max_health(20)

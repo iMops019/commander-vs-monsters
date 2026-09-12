@@ -9,7 +9,7 @@ script = ExtResource("1_hud")
 offset_left = 16.0
 offset_top = 16.0
 offset_right = 460.0
-offset_bottom = 280.0
+offset_bottom = 360.0
 theme_override_constants/margin_left = 8
 theme_override_constants/margin_top = 8
 theme_override_constants/margin_right = 8
@@ -39,3 +39,9 @@ text = "Upgrade: Worker Speed +20% (20 Wood / 10 Red Stone)"
 
 [node name="TowerDamageButton" type="Button" parent="Margin/VBox/UpgradePanel"]
 text = "Upgrade: Tower Damage +25% (15 Wood / 25 Red Stone)"
+
+[node name="HeroDamageButton" type="Button" parent="Margin/VBox/UpgradePanel"]
+text = "Upgrade: Hero Damage +5 (30 Gold)"
+
+[node name="HeroHealthButton" type="Button" parent="Margin/VBox/UpgradePanel"]
+text = "Upgrade: Hero Max Health +20 (30 Gold)"
