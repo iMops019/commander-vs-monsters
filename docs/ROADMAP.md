@@ -186,6 +186,39 @@ later phases assume earlier ones exist, even in placeholder form.
   more strategic pace a "HUGE" battlefield should have — but it's different enough
   from the old 40x40 map that it's worth a real playtest before deciding whether
   worker speed/carry capacity or resource placement need retuning
+- [x] GUI pass (also started early, not originally in this phase):
+  - **Faction/class selection** (`scenes/selection_screen.tscn`): a start-of-game
+    overlay ("Which side do you fight for?" → Humans/Horde → Warrior/Knight or
+    Grunt/Orc) that pauses the game until a choice is made. Sets
+    `GameState.player_faction`/`player_class` and starting Hero health via
+    `CLASS_STARTING_HEALTH` (Knight/Orc 130, Warrior/Grunt 100, per request — no
+    other class differences yet). Hero also now looks for
+    `assets/characters/<class>/<class>.tscn` the same way Worker looks for its
+    faction model, falling back to the capsule until Warrior/Knight/Grunt/Orc
+    models exist — **note**: choosing Humans vs Horde is currently cosmetic/stat
+    only, it does not swap which side is AI-controlled; you still always command
+    the "player" faction against the AI "monster" faction regardless of choice.
+    Flagging this since "which side do you fight for" could be read as a bigger
+    request (actually playing as the Horde commander) that wasn't built
+  - **Leveling now grows health**: each level-up adds `LEVEL_UP_HEALTH_BONUS`
+    (10) to Hero max health on top of any class/gold-upgrade bonuses, per "as
+    the player levels so does their health"
+  - **Commander UI split into two panels** (`hud.tscn`/`hud.gd`): a Commander
+    Functions panel (selection readout, Move/Chop Wood/Mine Stone buttons) next
+    to the existing Build panel. Move arms the cursor for the next ground click
+    (`commander_camera.gd`'s new `pending_command`); Chop Wood/Mine Stone
+    directly send the selected worker to the nearest matching resource node
+    (`command_gather_nearest`) rather than requiring a second click — existing
+    right-click select/command behavior is unchanged, these are additive
+  - **Fighter HUD**: health bar and XP bar + level label, visible only in Hero
+    mode, live-updated off `Health.damaged`/`died` and the existing XP/level
+    signals
+  - **Explicitly not built yet** (per your own "ideas for later," not part of
+    this pass): weapon slots, ammo, quick-switch weapon menu/mouse-wheel
+    cycling
+  - Verified with a full scripted run through the whole flow (faction → class →
+    stats applied → worker selection → chop command → level-up health growth)
+    headless, not just a load check
 - [ ] Tune AI Commander pacing/aggression against your own econ pace
 - [ ] Revisit the open questions in [GAME_DESIGN.md §8](GAME_DESIGN.md#8-open-questions-revisit-once-the-prototype-loop-is-playable)
       now that both loops actually exist to test against

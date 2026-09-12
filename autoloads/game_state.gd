@@ -3,12 +3,23 @@ extends Node
 enum ViewMode { COMMANDER, HERO }
 
 const XP_PER_LEVEL := 100
+const LEVEL_UP_HEALTH_BONUS := 10
+
+const CLASS_STARTING_HEALTH := {
+	"warrior": 100,
+	"knight": 130,
+	"grunt": 100,
+	"orc": 130,
+}
 
 var view_mode: ViewMode = ViewMode.COMMANDER
 
 var wood: int = 0
 var red_stone: int = 0
 var gold: int = 0
+
+var player_faction: String = ""
+var player_class: String = ""
 
 var hero_xp: int = 0
 var hero_level: int = 1
@@ -47,8 +58,16 @@ func add_hero_xp(amount: int) -> void:
 	while hero_xp >= XP_PER_LEVEL:
 		hero_xp -= XP_PER_LEVEL
 		hero_level += 1
+		increase_hero_max_health(LEVEL_UP_HEALTH_BONUS)
 		EventBus.hero_leveled_up.emit(hero_level)
 	EventBus.hero_xp_changed.emit(hero_xp)
+
+
+func choose_class(faction: String, chosen_class: String) -> void:
+	player_faction = faction
+	player_class = chosen_class
+	hero_max_health = CLASS_STARTING_HEALTH.get(chosen_class, 100)
+	EventBus.class_selected.emit(chosen_class, faction)
 
 
 func increase_hero_damage(amount: int) -> void:

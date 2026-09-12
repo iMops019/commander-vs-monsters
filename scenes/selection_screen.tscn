@@ -1,0 +1,51 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/selection_screen.gd" id="1_script"]
+
+[node name="SelectionScreen" type="CanvasLayer"]
+script = ExtResource("1_script")
+
+[node name="Background" type="ColorRect" parent="."]
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0.05, 0.05, 0.08, 0.9)
+
+[node name="CenterContainer" type="CenterContainer" parent="."]
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="FactionPanel" type="VBoxContainer" parent="CenterContainer"]
+
+[node name="TitleLabel" type="Label" parent="CenterContainer/FactionPanel"]
+text = "Welcome to Commanders and Monsters"
+horizontal_alignment = 1
+
+[node name="SubtitleLabel" type="Label" parent="CenterContainer/FactionPanel"]
+text = "Which side do you fight for?"
+horizontal_alignment = 1
+
+[node name="HumansButton" type="Button" parent="CenterContainer/FactionPanel"]
+text = "Humans"
+
+[node name="HordeButton" type="Button" parent="CenterContainer/FactionPanel"]
+text = "Horde"
+
+[node name="ClassPanel" type="VBoxContainer" parent="CenterContainer"]
+visible = false
+
+[node name="ClassTitleLabel" type="Label" parent="CenterContainer/ClassPanel"]
+text = "Choose your class"
+horizontal_alignment = 1
+
+[node name="ClassButton1" type="Button" parent="CenterContainer/ClassPanel"]
+text = "Class 1"
+
+[node name="ClassButton2" type="Button" parent="CenterContainer/ClassPanel"]
+text = "Class 2"
+
+[node name="BackButton" type="Button" parent="CenterContainer/ClassPanel"]
+text = "Back"

@@ -14,6 +14,8 @@ var placing_wood_cost: int = 0
 var placing_red_stone_cost: int = 0
 var ghost: Node3D = null
 
+var pending_command: String = ""
+
 
 func _ready() -> void:
 	GameState.commander_camera = self
@@ -51,6 +53,12 @@ func _unhandled_input(event: InputEvent) -> void:
 			_confirm_placement()
 		elif event.is_action_pressed("secondary_action") or event.is_action_pressed("ui_cancel"):
 			_cancel_placement()
+		return
+	if pending_command != "":
+		if event.is_action_pressed("primary_action"):
+			_execute_pending_command(get_viewport().get_mouse_position())
+		elif event.is_action_pressed("secondary_action") or event.is_action_pressed("ui_cancel"):
+			pending_command = ""
 		return
 	if event.is_action_pressed("primary_action"):
 		_select_at(get_viewport().get_mouse_position())
@@ -144,6 +152,40 @@ func _command_at(screen_pos: Vector2) -> void:
 		selected_worker.command_move(result["position"])
 
 
+func arm_move_command() -> void:
+	if is_instance_valid(selected_worker):
+		pending_command = "move"
+
+
+func command_gather_nearest(resource_type: String) -> bool:
+	if not is_instance_valid(selected_worker):
+		return false
+	var closest: Node = null
+	var closest_distance := INF
+	for node in get_tree().get_nodes_in_group("resource_nodes"):
+		if node.resource_type != resource_type:
+			continue
+		var distance: float = selected_worker.global_position.distance_to(node.global_position)
+		if distance < closest_distance:
+			closest = node
+			closest_distance = distance
+	if closest == null:
+		return false
+	selected_worker.command_gather(closest)
+	return true
+
+
+func _execute_pending_command(screen_pos: Vector2) -> void:
+	var command := pending_command
+	pending_command = ""
+	if not is_instance_valid(selected_worker):
+		return
+	if command == "move":
+		var result := _raycast(screen_pos)
+		if result.has("position"):
+			selected_worker.command_move(result["position"])
+
+
 func _set_selected(worker: Object) -> void:
 	if selected_worker == worker:
 		return
@@ -152,6 +194,7 @@ func _set_selected(worker: Object) -> void:
 	selected_worker = worker
 	if is_instance_valid(selected_worker):
 		selected_worker.set_selected(true)
+	EventBus.worker_selected.emit(selected_worker)
 
 
 func _set_selected_building(building: Object) -> void:

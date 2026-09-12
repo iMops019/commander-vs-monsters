@@ -7,11 +7,14 @@ const PITCH_LIMIT := deg_to_rad(80)
 const ATTACK_RANGE := 3.0
 const ATTACK_DAMAGE := 15
 const ATTACK_COOLDOWN := 0.6
+const MODEL_PATH_TEMPLATE := "res://assets/characters/%s/%s.tscn"
 
 @onready var camera_pivot: Node3D = $CameraPivot
 @onready var camera_first: Camera3D = $CameraPivot/Camera3DFirst
 @onready var camera_third: Camera3D = $CameraPivot/Camera3DThird
 @onready var health: Health = $Health
+@onready var fallback_mesh: MeshInstance3D = $MeshInstance3D
+@onready var model_container: Node3D = $ModelContainer
 
 var active := false
 var first_person := false
@@ -26,6 +29,7 @@ func _ready() -> void:
 	health.reset()
 	health.died.connect(_on_died)
 	EventBus.view_mode_changed.connect(_on_view_mode_changed)
+	EventBus.class_selected.connect(_on_class_selected)
 	_on_view_mode_changed(GameState.view_mode)
 
 
@@ -33,6 +37,17 @@ func on_max_health_increased(new_max: int) -> void:
 	var gained := new_max - health.max_health
 	health.max_health = new_max
 	health.heal(gained)
+
+
+func _on_class_selected(player_class: String, _player_faction: String) -> void:
+	health.max_health = GameState.hero_max_health
+	health.reset()
+
+	var model_path := MODEL_PATH_TEMPLATE % [player_class, player_class]
+	if ResourceLoader.exists(model_path):
+		var model: Node3D = load(model_path).instantiate()
+		model_container.add_child(model)
+		fallback_mesh.visible = false
 
 
 func _on_view_mode_changed(mode: int) -> void:

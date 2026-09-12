@@ -5,43 +5,140 @@
 [node name="HUD" type="CanvasLayer"]
 script = ExtResource("1_hud")
 
-[node name="Margin" type="MarginContainer" parent="."]
+[node name="CommanderUI" type="Control" parent="."]
+mouse_filter = 2
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="TopBar" type="MarginContainer" parent="CommanderUI"]
 offset_left = 16.0
 offset_top = 16.0
-offset_right = 460.0
-offset_bottom = 360.0
+offset_right = 820.0
+offset_bottom = 48.0
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 4
+
+[node name="ResourceLabel" type="Label" parent="CommanderUI/TopBar"]
+text = "Wood: 0   Red Stone: 0   Gold: 0"
+
+[node name="PanelsRow" type="HBoxContainer" parent="CommanderUI"]
+offset_left = 16.0
+offset_top = 56.0
+offset_right = 820.0
+offset_bottom = 420.0
+theme_override_constants/separation = 12
+
+[node name="CommanderFunctionsPanel" type="PanelContainer" parent="CommanderUI/PanelsRow"]
+custom_minimum_size = Vector2(380, 0)
+
+[node name="CFMargin" type="MarginContainer" parent="CommanderUI/PanelsRow/CommanderFunctionsPanel"]
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="CFVBox" type="VBoxContainer" parent="CommanderUI/PanelsRow/CommanderFunctionsPanel/CFMargin"]
+
+[node name="TitleLabel" type="Label" parent="CommanderUI/PanelsRow/CommanderFunctionsPanel/CFMargin/CFVBox"]
+text = "Commander"
+
+[node name="SelectionLabel" type="Label" parent="CommanderUI/PanelsRow/CommanderFunctionsPanel/CFMargin/CFVBox"]
+text = "Selected: none"
+
+[node name="MoveButton" type="Button" parent="CommanderUI/PanelsRow/CommanderFunctionsPanel/CFMargin/CFVBox"]
+disabled = true
+text = "Move (then click a spot)"
+
+[node name="ChopWoodButton" type="Button" parent="CommanderUI/PanelsRow/CommanderFunctionsPanel/CFMargin/CFVBox"]
+disabled = true
+text = "Chop Wood (nearest node)"
+
+[node name="MineStoneButton" type="Button" parent="CommanderUI/PanelsRow/CommanderFunctionsPanel/CFMargin/CFVBox"]
+disabled = true
+text = "Mine Stone (nearest node)"
+
+[node name="BuildingPanel" type="PanelContainer" parent="CommanderUI/PanelsRow"]
+custom_minimum_size = Vector2(380, 0)
+
+[node name="BuildMargin" type="MarginContainer" parent="CommanderUI/PanelsRow/BuildingPanel"]
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="BuildVBox" type="VBoxContainer" parent="CommanderUI/PanelsRow/BuildingPanel/BuildMargin"]
+
+[node name="TitleLabel" type="Label" parent="CommanderUI/PanelsRow/BuildingPanel/BuildMargin/BuildVBox"]
+text = "Build"
+
+[node name="BuildTowerButton" type="Button" parent="CommanderUI/PanelsRow/BuildingPanel/BuildMargin/BuildVBox"]
+text = "Build Tower (40 Wood / 20 Red Stone)"
+
+[node name="BuildTechButton" type="Button" parent="CommanderUI/PanelsRow/BuildingPanel/BuildMargin/BuildVBox"]
+text = "Build Tech Building (30 Wood / 40 Red Stone)"
+
+[node name="UpgradePanel" type="VBoxContainer" parent="CommanderUI/PanelsRow/BuildingPanel/BuildMargin/BuildVBox"]
+visible = false
+
+[node name="UpgradeTitleLabel" type="Label" parent="CommanderUI/PanelsRow/BuildingPanel/BuildMargin/BuildVBox/UpgradePanel"]
+text = "Tech Building"
+
+[node name="WorkerSpeedButton" type="Button" parent="CommanderUI/PanelsRow/BuildingPanel/BuildMargin/BuildVBox/UpgradePanel"]
+text = "Upgrade: Worker Speed +20% (20 Wood / 10 Red Stone)"
+
+[node name="TowerDamageButton" type="Button" parent="CommanderUI/PanelsRow/BuildingPanel/BuildMargin/BuildVBox/UpgradePanel"]
+text = "Upgrade: Tower Damage +25% (15 Wood / 25 Red Stone)"
+
+[node name="HeroDamageButton" type="Button" parent="CommanderUI/PanelsRow/BuildingPanel/BuildMargin/BuildVBox/UpgradePanel"]
+text = "Upgrade: Hero Damage +5 (30 Gold)"
+
+[node name="HeroHealthButton" type="Button" parent="CommanderUI/PanelsRow/BuildingPanel/BuildMargin/BuildVBox/UpgradePanel"]
+text = "Upgrade: Hero Max Health +20 (30 Gold)"
+
+[node name="FighterUI" type="Control" parent="."]
+mouse_filter = 2
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="FighterMargin" type="MarginContainer" parent="FighterUI"]
+offset_left = 16.0
+offset_top = 16.0
+offset_right = 336.0
+offset_bottom = 92.0
 theme_override_constants/margin_left = 8
 theme_override_constants/margin_top = 8
 theme_override_constants/margin_right = 8
 theme_override_constants/margin_bottom = 8
 
-[node name="VBox" type="VBoxContainer" parent="Margin"]
+[node name="FighterVBox" type="VBoxContainer" parent="FighterUI/FighterMargin"]
+theme_override_constants/separation = 4
 
-[node name="ResourceLabel" type="Label" parent="Margin/VBox"]
-text = "Wood: 0   Red Stone: 0   Gold: 0"
+[node name="HealthRow" type="HBoxContainer" parent="FighterUI/FighterMargin/FighterVBox"]
 
-[node name="BuildPanel" type="HBoxContainer" parent="Margin/VBox"]
+[node name="HealthLabel" type="Label" parent="FighterUI/FighterMargin/FighterVBox/HealthRow"]
+custom_minimum_size = Vector2(60, 0)
+text = "Health"
 
-[node name="BuildTowerButton" type="Button" parent="Margin/VBox/BuildPanel"]
-text = "Build Tower (40 Wood / 20 Red Stone)"
+[node name="HealthBar" type="ProgressBar" parent="FighterUI/FighterMargin/FighterVBox/HealthRow"]
+custom_minimum_size = Vector2(220, 20)
+max_value = 100.0
+value = 100.0
+show_percentage = false
 
-[node name="BuildTechButton" type="Button" parent="Margin/VBox/BuildPanel"]
-text = "Build Tech Building (30 Wood / 40 Red Stone)"
+[node name="XPRow" type="HBoxContainer" parent="FighterUI/FighterMargin/FighterVBox"]
 
-[node name="UpgradePanel" type="VBoxContainer" parent="Margin/VBox"]
-visible = false
+[node name="LevelLabel" type="Label" parent="FighterUI/FighterMargin/FighterVBox/XPRow"]
+custom_minimum_size = Vector2(60, 0)
+text = "Lv 1"
 
-[node name="UpgradeTitleLabel" type="Label" parent="Margin/VBox/UpgradePanel"]
-text = "Tech Building"
-
-[node name="WorkerSpeedButton" type="Button" parent="Margin/VBox/UpgradePanel"]
-text = "Upgrade: Worker Speed +20% (20 Wood / 10 Red Stone)"
-
-[node name="TowerDamageButton" type="Button" parent="Margin/VBox/UpgradePanel"]
-text = "Upgrade: Tower Damage +25% (15 Wood / 25 Red Stone)"
-
-[node name="HeroDamageButton" type="Button" parent="Margin/VBox/UpgradePanel"]
-text = "Upgrade: Hero Damage +5 (30 Gold)"
-
-[node name="HeroHealthButton" type="Button" parent="Margin/VBox/UpgradePanel"]
-text = "Upgrade: Hero Max Health +20 (30 Gold)"
+[node name="XPBar" type="ProgressBar" parent="FighterUI/FighterMargin/FighterVBox/XPRow"]
+custom_minimum_size = Vector2(220, 14)
+max_value = 100.0
+value = 0.0
+show_percentage = false

@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3]
+[gd_scene load_steps=21 format=3]
 
 [ext_resource type="Script" path="res://scripts/hero.gd" id="1_hero"]
 [ext_resource type="Script" path="res://scripts/commander_camera.gd" id="2_cam"]
@@ -12,6 +12,7 @@
 [ext_resource type="PackedScene" path="res://scenes/monster_commander.tscn" id="10_monster_cmd"]
 [ext_resource type="PackedScene" path="res://scenes/win_screen.tscn" id="11_winscreen"]
 [ext_resource type="Script" path="res://scripts/map_border.gd" id="12_border"]
+[ext_resource type="PackedScene" path="res://scenes/selection_screen.tscn" id="13_selection"]
 
 [sub_resource type="Environment" id="Environment_1"]
 background_mode = 1
@@ -68,6 +69,8 @@ shape = SubResource("CapsuleShape3D_hero")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Hero"]
 mesh = SubResource("CapsuleMesh_hero")
+
+[node name="ModelContainer" type="Node3D" parent="Hero"]
 
 [node name="Health" type="Node" parent="Hero"]
 script = ExtResource("8_health")
@@ -139,3 +142,5 @@ position = Vector3(0, 0.5, 143)
 script = ExtResource("12_border")
 map_width = 70.0
 map_length = 338.0
+
+[node name="SelectionScreen" parent="." instance=ExtResource("13_selection")]
