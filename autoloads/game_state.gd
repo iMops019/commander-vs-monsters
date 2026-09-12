@@ -76,3 +76,18 @@ func increase_tower_damage(amount: float) -> void:
 func set_view_mode(mode: ViewMode) -> void:
 	view_mode = mode
 	EventBus.view_mode_changed.emit(mode)
+
+
+func reset() -> void:
+	view_mode = ViewMode.COMMANDER
+	wood = 0
+	red_stone = 0
+	gold = 0
+	hero_xp = 0
+	hero_level = 1
+	hero_max_health = 100
+	hero_damage_bonus = 0
+	hero = null
+	commander_camera = null
+	worker_speed_multiplier = 1.0
+	tower_damage_multiplier = 1.0

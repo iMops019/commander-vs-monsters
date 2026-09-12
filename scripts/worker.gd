@@ -28,7 +28,7 @@ func _ready() -> void:
 	add_to_group("player_workers" if faction == "player" else "monster_workers")
 	if faction != "player":
 		add_to_group("hostile")
-		health.died.connect(_on_died)
+	health.died.connect(_on_died)
 
 	var body_material := StandardMaterial3D.new()
 	body_material.albedo_color = Color(0.85, 0.7, 0.1) if faction == "player" else Color(0.55, 0.15, 0.05)
@@ -47,8 +47,9 @@ func _ready() -> void:
 
 
 func _on_died() -> void:
-	GameState.add_hero_xp(10)
-	GameState.add_resource("gold", 5)
+	if faction != "player":
+		GameState.add_hero_xp(10)
+		GameState.add_resource("gold", 5)
 	queue_free()
 
 

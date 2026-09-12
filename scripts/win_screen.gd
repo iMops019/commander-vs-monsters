@@ -18,4 +18,5 @@ func _on_game_won() -> void:
 
 func _on_restart_pressed() -> void:
 	get_tree().paused = false
+	GameState.reset()
 	get_tree().reload_current_scene()
