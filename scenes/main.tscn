@@ -111,6 +111,20 @@ position = Vector3(-20, 0.5, 0)
 position = Vector3(20, 0.5, 0)
 resource_type = "red_stone"
 
+[node name="WoodNodeHomeSouth" parent="." instance=ExtResource("6_resnode")]
+position = Vector3(-15, 0.5, -120)
+
+[node name="RedStoneNodeHomeSouth" parent="." instance=ExtResource("6_resnode")]
+position = Vector3(15, 0.5, -120)
+resource_type = "red_stone"
+
+[node name="WoodNodeHomeNorth" parent="." instance=ExtResource("6_resnode")]
+position = Vector3(-15, 0.5, 120)
+
+[node name="RedStoneNodeHomeNorth" parent="." instance=ExtResource("6_resnode")]
+position = Vector3(15, 0.5, 120)
+resource_type = "red_stone"
+
 [node name="HUD" parent="." instance=ExtResource("7_hud")]
 
 [node name="TrainingDummy" parent="." instance=ExtResource("9_dummy")]
