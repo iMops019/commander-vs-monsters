@@ -1,3 +1,9 @@
 # Godot 4+ specific ignores
 .godot/
 /android/
+
+# Meshy per-animation FBX exports each embed a copy of the character's
+# texture; Godot auto-extracts it next to the source file on import. The
+# real textures live in each character's textures/ folder - these are pure
+# duplicates.
+assets/characters/**/*_0.png*
