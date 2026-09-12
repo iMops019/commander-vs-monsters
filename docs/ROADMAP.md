@@ -88,12 +88,39 @@ later phases assume earlier ones exist, even in placeholder form.
       Gold/XP tick up, then switch to Commander and spend Gold on a Hero upgrade
 
 ## Phase 5 — Monster AI Side
-- [ ] Monster Worker: same gather loop as Phase 2, no player input, runs on its own
-- [ ] AI Commander loop: a timer-driven decision step (build worker vs building vs
-      upgrade vs assign attacker) — a basic priority list is enough, no need for real
-      utility AI yet
-- [ ] Monster Defender: guard/aggro state machine near its base/resources
-- [ ] Monster Attacker: raid state machine that paths to the player's base periodically
+- [x] Monster Worker: **reused `scenes/worker.tscn`/`scripts/worker.gd` for both
+      factions** rather than duplicating the gather state machine — added a `faction`
+      field, a `Health` child (so it's killable), and generalized the deposit call to
+      `stockpile.deposit(...)` (a duck-typed method now on both `stockpile.gd` and
+      `monster_commander.gd`) instead of hardcoding `GameState.add_resource`. Monster
+      workers compete for the *same* wood/red-stone nodes as the player's — no separate
+      resource set was added. Fixed a related bug while doing this: RTS click-selection
+      in `commander_camera.gd` was checking group "workers" (which now includes enemy
+      workers too) — narrowed to "player_workers" so you can't select/command the enemy's
+- [x] AI Commander loop (`scripts/monster_commander.gd`): every 5s, a priority list —
+      spawn worker (if under cap & affordable) → else spawn attacker → else spawn
+      defender → else spend on a random internal upgrade (attacker or defender damage
+      multiplier). Has its own `wood`/`red_stone` pool, separate from the player's
+      `GameState` fields (mirrors the "AI runs its own economy" pillar). Also
+      reassigns idle monster workers to the nearest remaining resource node each tick
+- [x] Monster Defender (`scripts/monster_defender.gd`): GUARDING → CHASING → ATTACKING →
+      RETURNING around a fixed guard post, with a leash range so it won't chase forever.
+      Deals damage to the Hero directly (scaled by the AI's `defender_damage_multiplier`)
+      — this goes a bit beyond the roadmap's plain "guard/aggro" wording, but a defender
+      that can't fight back would just be another training dummy, and Hero-vs-Defender
+      combat is the core of the GDD's "farm monsters for XP" loop
+- [x] Monster Attacker (`scripts/monster_attacker.gd`): RAIDING → LINGERING → RETURNING —
+      walks from the monster base to the player's Stockpile, waits there a while, then
+      walks home and despawns. **Deliberately does not deal damage yet** — the roadmap
+      puts "Attackers actually damage player workers/buildings" in Phase 6, so this
+      phase only proves the pathing/raid-timing behavior
+- [x] All monster units (worker/defender/attacker) are in group "hostile" and grant
+      Hero XP/gold on death, same pattern as the Phase 4 training dummy (which is still
+      in the scene as an isolated damage-test target). Verified headless over ~16
+      simulated seconds (multiple AI decision cycles: worker spawn, attacker raid
+      reaching the player base, etc.) with no errors. **Still needs an in-editor
+      play-test**: watch the enemy base produce units over time, let a monster worker
+      path to a resource node, get raided by an attacker, and fight a defender as Hero
 
 ## Phase 6 — Combat Glue & Win Condition
 - [ ] Towers auto-target and fire at monsters in range

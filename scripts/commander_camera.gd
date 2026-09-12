@@ -120,7 +120,7 @@ func _raycast(screen_pos: Vector2) -> Dictionary:
 func _select_at(screen_pos: Vector2) -> void:
 	var result := _raycast(screen_pos)
 	var hit: Object = result.get("collider")
-	if hit != null and hit.is_in_group("workers"):
+	if hit != null and hit.is_in_group("player_workers"):
 		_set_selected(hit)
 		_set_selected_building(null)
 	elif hit != null and hit.is_in_group("tech_buildings"):

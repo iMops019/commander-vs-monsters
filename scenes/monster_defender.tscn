@@ -1,0 +1,27 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://scripts/monster_defender.gd" id="1_script"]
+[ext_resource type="Script" path="res://scripts/health.gd" id="2_health"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_defender"]
+radius = 0.45
+height = 2.0
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_defender"]
+radius = 0.45
+height = 2.0
+
+[node name="MonsterDefender" type="CharacterBody3D"]
+script = ExtResource("1_script")
+
+[node name="Health" type="Node" parent="."]
+script = ExtResource("2_health")
+max_health = 60
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+position = Vector3(0, 1.0, 0)
+mesh = SubResource("CapsuleMesh_defender")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+position = Vector3(0, 1.0, 0)
+shape = SubResource("CapsuleShape3D_defender")

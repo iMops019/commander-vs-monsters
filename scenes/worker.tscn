@@ -1,6 +1,7 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=6 format=3]
 
 [ext_resource type="Script" path="res://scripts/worker.gd" id="1_script"]
+[ext_resource type="Script" path="res://scripts/health.gd" id="2_health"]
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_worker"]
 radius = 0.3
@@ -17,6 +18,10 @@ height = 0.02
 
 [node name="Worker" type="CharacterBody3D"]
 script = ExtResource("1_script")
+
+[node name="Health" type="Node" parent="."]
+script = ExtResource("2_health")
+max_health = 30
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 position = Vector3(0, 0.6, 0)

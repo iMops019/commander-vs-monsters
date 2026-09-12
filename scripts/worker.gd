@@ -8,8 +8,11 @@ const GATHER_INTERVAL := 0.5
 const GATHER_AMOUNT := 1
 const CARRY_CAPACITY := 10
 
+@export var faction: String = "player"
+
 @onready var mesh_instance: MeshInstance3D = $MeshInstance3D
 @onready var selection_ring: MeshInstance3D = $SelectionRing
+@onready var health: Health = $Health
 
 var state: State = State.IDLE
 var move_target: Vector3
@@ -17,14 +20,18 @@ var target_resource: Node = null
 var resource_type: String = ""
 var carrying: int = 0
 var gather_timer: float = 0.0
-var stockpile: Node3D = null
+var stockpile: Node = null
 
 
 func _ready() -> void:
 	add_to_group("workers")
+	add_to_group("player_workers" if faction == "player" else "monster_workers")
+	if faction != "player":
+		add_to_group("hostile")
+		health.died.connect(_on_died)
 
 	var body_material := StandardMaterial3D.new()
-	body_material.albedo_color = Color(0.85, 0.7, 0.1)
+	body_material.albedo_color = Color(0.85, 0.7, 0.1) if faction == "player" else Color(0.55, 0.15, 0.05)
 	mesh_instance.material_override = body_material
 
 	var ring_material := StandardMaterial3D.new()
@@ -33,9 +40,20 @@ func _ready() -> void:
 	ring_material.emission = Color(0.2, 1.0, 0.3)
 	selection_ring.material_override = ring_material
 
-	var stockpiles := get_tree().get_nodes_in_group("stockpile")
-	if not stockpiles.is_empty():
-		stockpile = stockpiles[0]
+	if stockpile == null and faction == "player":
+		var stockpiles := get_tree().get_nodes_in_group("stockpile")
+		if not stockpiles.is_empty():
+			stockpile = stockpiles[0]
+
+
+func _on_died() -> void:
+	GameState.add_hero_xp(10)
+	GameState.add_resource("gold", 5)
+	queue_free()
+
+
+func is_idle() -> bool:
+	return state == State.IDLE
 
 
 func set_selected(value: bool) -> void:
@@ -81,7 +99,7 @@ func _physics_process(delta: float) -> void:
 					if taken == 0 or carrying >= CARRY_CAPACITY:
 						state = State.RETURNING
 		State.RETURNING:
-			if stockpile == null:
+			if stockpile == null or not is_instance_valid(stockpile):
 				state = State.IDLE
 			else:
 				_move_toward(stockpile.global_position, delta)
@@ -89,7 +107,7 @@ func _physics_process(delta: float) -> void:
 					velocity.x = 0
 					velocity.z = 0
 					if carrying > 0:
-						GameState.add_resource(resource_type, carrying)
+						stockpile.deposit(resource_type, carrying)
 						carrying = 0
 					if is_instance_valid(target_resource):
 						move_target = target_resource.global_position
@@ -113,7 +131,9 @@ func _move_toward(destination: Vector3, _delta: float) -> void:
 	to_target.y = 0
 	if to_target.length() > ARRIVE_DISTANCE:
 		var direction := to_target.normalized()
-		var speed := SPEED * GameState.worker_speed_multiplier
+		var speed := SPEED
+		if faction == "player":
+			speed *= GameState.worker_speed_multiplier
 		velocity.x = direction.x * speed
 		velocity.z = direction.z * speed
 		look_at(global_position + direction, Vector3.UP)
