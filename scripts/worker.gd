@@ -8,11 +8,17 @@ const GATHER_INTERVAL := 0.5
 const GATHER_AMOUNT := 1
 const CARRY_CAPACITY := 10
 
+const PLAYER_MODEL_PATH := "res://assets/characters/peasant/peasant.tscn"
+const MONSTER_MODEL_PATH := "res://assets/characters/goblin/goblin.tscn"
+
 @export var faction: String = "player"
 
-@onready var mesh_instance: MeshInstance3D = $MeshInstance3D
+@onready var fallback_mesh: MeshInstance3D = $MeshInstance3D
+@onready var model_container: Node3D = $ModelContainer
 @onready var selection_ring: MeshInstance3D = $SelectionRing
 @onready var health: Health = $Health
+
+var animation_player: AnimationPlayer = null
 
 var state: State = State.IDLE
 var move_target: Vector3
@@ -32,13 +38,20 @@ func _ready() -> void:
 
 	var body_material := StandardMaterial3D.new()
 	body_material.albedo_color = Color(0.85, 0.7, 0.1) if faction == "player" else Color(0.55, 0.15, 0.05)
-	mesh_instance.material_override = body_material
+	fallback_mesh.material_override = body_material
 
 	var ring_material := StandardMaterial3D.new()
 	ring_material.albedo_color = Color(0.2, 1.0, 0.3)
 	ring_material.emission_enabled = true
 	ring_material.emission = Color(0.2, 1.0, 0.3)
 	selection_ring.material_override = ring_material
+
+	var model_path := PLAYER_MODEL_PATH if faction == "player" else MONSTER_MODEL_PATH
+	if ResourceLoader.exists(model_path):
+		var model: Node3D = load(model_path).instantiate()
+		model_container.add_child(model)
+		animation_player = _find_animation_player(model)
+		fallback_mesh.visible = false
 
 	if stockpile == null and faction == "player":
 		var stockpiles := get_tree().get_nodes_in_group("stockpile")
@@ -125,6 +138,34 @@ func _physics_process(delta: float) -> void:
 		velocity.y = 0
 
 	move_and_slide()
+	_update_animation()
+
+
+func _update_animation() -> void:
+	match state:
+		State.IDLE:
+			_set_animation("idle")
+		State.MOVING, State.RETURNING:
+			_set_animation("walk")
+		State.GATHERING:
+			_set_animation("chop")
+
+
+func _set_animation(anim_name: String) -> void:
+	if animation_player == null or not animation_player.has_animation(anim_name):
+		return
+	if animation_player.current_animation != anim_name:
+		animation_player.play(anim_name)
+
+
+func _find_animation_player(node: Node) -> AnimationPlayer:
+	if node is AnimationPlayer:
+		return node
+	for child in node.get_children():
+		var result := _find_animation_player(child)
+		if result != null:
+			return result
+	return null
 
 
 func _move_toward(destination: Vector3, _delta: float) -> void:
