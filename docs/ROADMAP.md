@@ -160,10 +160,11 @@ later phases assume earlier ones exist, even in placeholder form.
 
 ## Phase 7 — Playtest & Tuning Pass
 - [x] Map rework (started early, ahead of the rest of this phase): the battlefield is
-      now a long corridor rather than a 40x40 square — ground resized to 70 wide x 260
-      long (`main.tscn`), player Stockpile/Hero/Worker/dummy at the south end (z≈-110),
-      Monster Commander at the north end (z≈110), the two resource nodes centered at
-      z=0 as contested ground between the bases
+      now a long corridor rather than a 40x40 square — ground resized to 70 wide x 338
+      long (`main.tscn`; originally 260, then increased 30% along the length per
+      request), player Stockpile/Hero/Worker/dummy at the south end (z≈-143), Monster
+      Commander at the north end (z≈143), the two resource nodes centered at z=0 as
+      contested ground between the bases
 - [x] Border/edge (`scripts/map_border.gd`): a `MapBorder` node procedurally builds 4
       tall box walls around the perimeter at `_ready()`, parametrized by
       `map_width`/`map_length` so resizing the map again doesn't mean hand-editing wall
@@ -179,9 +180,9 @@ later phases assume earlier ones exist, even in placeholder form.
   still empty) — this phase's greybox placeholders are what they'll replace once
   generated. Verified headless with no errors
 - **Balance heads-up, not yet acted on**: at the new scale, a worker's round trip from
-  the player Stockpile to the nearest resource node (~110 units each way, 3.5 units/s)
-  is roughly a minute for a 10-unit haul, and Hero crossing the full battlefield
-  (5 units/s over 260 units) takes about 50 seconds. That may be exactly the slower,
+  the player Stockpile to the nearest resource node (~143 units each way, 3.5 units/s)
+  is over a minute for a 10-unit haul, and Hero crossing the full battlefield
+  (5 units/s over 338 units) takes over a minute too. That may be exactly the slower,
   more strategic pace a "HUGE" battlefield should have — but it's different enough
   from the old 40x40 map that it's worth a real playtest before deciding whether
   worker speed/carry capacity or resource placement need retuning
