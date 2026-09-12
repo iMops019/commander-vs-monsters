@@ -34,12 +34,19 @@ later phases assume earlier ones exist, even in placeholder form.
       switch (headless can't confirm "does this feel instant and non-janky")
 
 ## Phase 2 — Worker AI & Resources (Commander side)
-- [ ] Resource node scenes (wood, red stone) placed in the level
-- [ ] Worker unit: gather → return to drop-off → deposit → repeat (simple state
-      machine)
-- [ ] RTS selection: click to select a worker, right-click to command
-      (move/gather-at-node)
-- [ ] `GameState` resource counters update on deposit
+- [x] Resource node scenes (`scenes/resource_node.tscn` + `scripts/resource_node.gd`) —
+      one wood node and one red-stone node placed in `main.tscn` (color-coded, finite
+      `amount` that depletes and frees the node)
+- [x] Worker unit (`scenes/worker.tscn` + `scripts/worker.gd`): IDLE/MOVING/GATHERING/
+      RETURNING state machine — walks to a resource, gathers on a tick, returns to the
+      `Stockpile` marker, deposits, repeats automatically
+- [x] RTS selection & commanding, added to `scripts/commander_camera.gd`: left-click
+      raycasts and selects a worker (green ring), right-click raycasts and either
+      commands gather (hit a resource node) or plain move (hit anything else, e.g. bare
+      ground)
+- [x] `GameState.add_resource()` called on deposit — resource counters update, verified
+      no script/scene errors headless. **Still needs an in-editor play-test**: select the
+      worker, right-click the wood/red-stone node, watch it gather and return
 
 ## Phase 3 — Base Building
 - [ ] Build placement flow: pick building from menu, ghost preview, cost check, confirm

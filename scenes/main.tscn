@@ -1,8 +1,11 @@
-[gd_scene load_steps=9 format=3]
+[gd_scene load_steps=13 format=3]
 
 [ext_resource type="Script" path="res://scripts/hero.gd" id="1_hero"]
 [ext_resource type="Script" path="res://scripts/commander_camera.gd" id="2_cam"]
 [ext_resource type="Script" path="res://scripts/main.gd" id="3_main"]
+[ext_resource type="Script" path="res://scripts/stockpile.gd" id="4_stockpile"]
+[ext_resource type="PackedScene" path="res://scenes/worker.tscn" id="5_worker"]
+[ext_resource type="PackedScene" path="res://scenes/resource_node.tscn" id="6_resnode"]
 
 [sub_resource type="Environment" id="Environment_1"]
 background_mode = 1
@@ -24,6 +27,9 @@ height = 1.8
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_hero"]
 radius = 0.4
 height = 1.8
+
+[sub_resource type="BoxMesh" id="BoxMesh_stockpile"]
+size = Vector3(2, 2, 2)
 
 [node name="Main" type="Node3D"]
 script = ExtResource("3_main")
@@ -68,3 +74,21 @@ position = Vector3(0, 18, 12)
 rotation_degrees = Vector3(-60, 0, 0)
 current = true
 script = ExtResource("2_cam")
+
+[node name="Stockpile" type="Node3D" parent="."]
+position = Vector3(0, 0.5, -10)
+script = ExtResource("4_stockpile")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Stockpile"]
+position = Vector3(0, 1, 0)
+mesh = SubResource("BoxMesh_stockpile")
+
+[node name="Worker" parent="." instance=ExtResource("5_worker")]
+position = Vector3(0, 0.5, -8)
+
+[node name="WoodNode" parent="." instance=ExtResource("6_resnode")]
+position = Vector3(-8, 0.5, 5)
+
+[node name="RedStoneNode" parent="." instance=ExtResource("6_resnode")]
+position = Vector3(8, 0.5, 5)
+resource_type = "red_stone"
